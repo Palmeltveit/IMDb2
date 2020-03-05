@@ -1,6 +1,9 @@
 import DB.DBConnection;
+import models.Bruker;
 import models.Film;
+import models.Person;
 import models.Produksjonsselskap;
+import models.reactions.Rating;
 
 import java.sql.Date;
 
@@ -17,6 +20,13 @@ public class Main {
 
         produksjonsselskap.save(connection.getConn());
         film.save(connection.getConn());
+
+        Bruker bruker = new Bruker("P.G", "plåp");
+        bruker.save(connection.getConn());
+        Rating brukerRating = new Rating(bruker, film, "My favourite ;)", "The pizza guy is awesome, wish there were more!", 10);
+        brukerRating.save(connection.getConn());
+
+        System.out.println("brukerID: " + bruker.getID() + " -- ratingID: " + brukerRating.getID());
     }
 
 }

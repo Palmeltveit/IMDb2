@@ -1,18 +1,22 @@
 package models;
 
 import DB.ActiveDomainObject;
-import models.crew.CrewMember;
-import models.crew.Skuespiller;
+import DB.DBConnection;
+import DB.DBHelper;
 import models.reactions.Kommentar;
 import models.reactions.Rating;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
-public class Serie extends AbstraktFilm implements IRateable, ActiveDomainObject {
+public class Serie extends BaseFilm implements IRateable, ActiveDomainObject {
 
-    public Serie(int id) {
-        super(id);
+    private long serieID = -1;
+
+    public Serie(int SerieId) {
+        super(-1);
     }
 
     public Serie(Produksjonsselskap produksjonsselskap, String tittel, int lengde, int utgivelsesar,
@@ -20,24 +24,49 @@ public class Serie extends AbstraktFilm implements IRateable, ActiveDomainObject
         super(produksjonsselskap, tittel, lengde, utgivelsesar, langeringsDato, beskrivelse, opprinneligLagetFor);
     }
 
-    //TODO
-    public void addRating(Rating rating) {
-
+    public void addRating(Connection conn, Rating rating) {
+        DBHelper.addRating(conn, "SerieRating", "SerieID", this.serieID, rating);
     }
 
-    public void addComment(Kommentar comment) {
-
+    public void addComment(Connection conn, Kommentar comment) {
+        DBHelper.addComment(conn, "SerieKommentar", "SerieID", this.serieID, comment);
     }
 
     public void initialize(Connection conn) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("select * from Serie where ID=?");
+            stmt.setLong(1, this.serieID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                this.setID(rs.getLong("FilmID"));
+                super.initialize(conn);
+            }
 
+        } catch (Exception e) {
+            System.out.println("db error during select of Serie= "+e);
+            return;
+        }
     }
 
     public void refresh(Connection conn) {
-
+        this.initialize(conn);
     }
 
     public void save(Connection conn) {
 
+        try {
+            //inserting baseFilm row first, then getting the id
+            super.save(conn);
+            if(super.getID() != -1) { //save successful
+                //assuming not in table -> inserting
+                PreparedStatement statement = conn.prepareStatement(
+                        "INSERT INTO Serie(FilmID) VALUES (?)",
+                        PreparedStatement.RETURN_GENERATED_KEYS);
+
+                this.serieID = DBHelper.executeAndCheckInsertWithReturnId(statement);
+            }
+        } catch (Exception e){
+            System.out.println("db error during save of Film= " + e);
+        }
     }
 }

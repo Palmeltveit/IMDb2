@@ -2,7 +2,7 @@ package models;
 
 import DB.ActiveDomainObject;
 import DB.DBConnection;
-import DB.Inserteable;
+import DB.DBHelper;
 import models.crew.CrewMember;
 import models.crew.Skuespiller;
 import models.reactions.Kommentar;
@@ -11,7 +11,7 @@ import models.reactions.Rating;
 import java.sql.*;
 import java.util.List;
 
-public class Film extends AbstraktFilm implements IFilm, IRateable, ActiveDomainObject {
+public class Film extends BaseFilm implements IFilm, IRateable {
 
     private List<Person> skuespillere;
 
@@ -25,12 +25,12 @@ public class Film extends AbstraktFilm implements IFilm, IRateable, ActiveDomain
     }
 
     //TODO
-    public void addRating(Rating rating) {
-
+    public void addRating(Connection conn, Rating rating) {
+        DBHelper.addRating(conn, "FilmRating", "FilmID", this.getID(), rating);
     }
 
-    public void addComment(Kommentar comment) {
-
+    public void addComment(Connection conn, Kommentar comment) {
+        DBHelper.addComment(conn, "FilmKommentar", "FilmID", this.getID(), comment);
     }
 
     public void addCrewMember(Connection conn, CrewMember member) {
@@ -47,7 +47,7 @@ public class Film extends AbstraktFilm implements IFilm, IRateable, ActiveDomain
             statement.setLong(1, this.getID());
             statement.setLong(2, member.getPerson().getID());
 
-            DBConnection.executeAndCheckInsert(statement);
+            DBHelper.executeAndCheckInsert(statement);
 
         } catch (Exception e){
             System.out.println("db error during save of Film CrewMember= " + e);
@@ -68,7 +68,7 @@ public class Film extends AbstraktFilm implements IFilm, IRateable, ActiveDomain
             statement.setLong(2, skuespiller.getPerson().getID());
             statement.setString(2, skuespiller.getRolle());
 
-            DBConnection.executeAndCheckInsert(statement);
+            DBHelper.executeAndCheckInsert(statement);
 
         } catch (Exception e){
             System.out.println("db error during save of Film Skuespiller= " + e);
@@ -83,53 +83,5 @@ public class Film extends AbstraktFilm implements IFilm, IRateable, ActiveDomain
 
     }
 
-    public void initialize(Connection conn) {
-        try {
-            PreparedStatement stmt = conn.prepareStatement("select * from Film where ID=?");
-            stmt.setLong(1, this.getID());
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                //getting production company
-                Produksjonsselskap produksjonsselskap = new Produksjonsselskap(rs.getInt("Produksjonsselskap"));
-                produksjonsselskap.initialize(conn);
 
-                this.initAbstraktFilmValues(produksjonsselskap,
-                        rs.getString("Tittel"), rs.getInt("Lengde"),
-                        rs.getInt("Utgivelsesår"), rs.getDate("LanseringsDato"),
-                        rs.getString("Beskrivelse"), rs.getInt("OpprinneligLagetFor"));
-            }
-
-        } catch (Exception e) {
-            System.out.println("db error during select of film= "+e);
-            return;
-        }
-    }
-
-    public void refresh(Connection conn) {
-        this.initialize(conn);
-    }
-
-    public void save(Connection conn) {
-
-        try {
-            //assuming not in table -> inserting
-            PreparedStatement statement = conn.prepareStatement(
-                    "INSERT INTO Film(Produksjonsselskap, Tittel, Lengde, Utgivelsesår, " +
-                            "LanseringsDato, Beskrivelse, OpprinneligLagetFor) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    PreparedStatement.RETURN_GENERATED_KEYS);
-
-            statement.setLong(1, this.getProduksjonsselskap().getID());
-            statement.setString(2, this.getTittel());
-            statement.setInt(3, this.getLengde());
-            statement.setInt(4, this.getUtgivelsesar());
-            statement.setDate(5, this.getLangeringsDato());
-            statement.setString(6, this.getBeskrivelse());
-            statement.setInt(7, this.getOpprinneligLagetFor());
-
-            this.setID(DBConnection.executeAndCheckInsertWithReturnId(statement));
-
-        } catch (Exception e){
-            System.out.println("db error during save of Film= " + e);
-        }
-    }
 }

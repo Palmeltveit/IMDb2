@@ -2,6 +2,7 @@ package models;
 
 import DB.ActiveDomainObject;
 import DB.DBConnection;
+import DB.DBHelper;
 
 import javax.xml.transform.Result;
 import java.sql.*;
@@ -59,7 +60,7 @@ public class Produksjonsselskap implements ActiveDomainObject {
                 PreparedStatement statement = conn.prepareStatement("INSERT INTO Produksjonsselskap(Navn, Opprettet) VALUES (?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
                 statement.setString(1, this.navn);
                 statement.setDate(2, this.opprettet);
-                this.ID = DBConnection.executeAndCheckInsertWithReturnId(statement);
+                this.ID = DBHelper.executeAndCheckInsertWithReturnId(statement);
             } else {
                 //assuming already in db -> updating (probably unnecessary, dropping this in the future)
                 PreparedStatement statement = conn.prepareStatement("UPDATE Produksjonsselskap SET Navn=?, Opprettet=? WHERE ID=?");

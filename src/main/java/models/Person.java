@@ -2,6 +2,7 @@ package models;
 
 import DB.ActiveDomainObject;
 import DB.DBConnection;
+import DB.DBHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -73,7 +74,7 @@ public class Person implements ActiveDomainObject {
             statement.setString(2, fodselsland);
             statement.setInt(3, fodselsar);
 
-            this.ID = DBConnection.executeAndCheckInsertWithReturnId(statement);
+            this.ID = DBHelper.executeAndCheckInsertWithReturnId(statement);
 
         } catch (Exception e){
             System.out.println("db error during save of Person= " + e);
