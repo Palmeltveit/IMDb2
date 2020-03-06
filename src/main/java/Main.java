@@ -1,8 +1,8 @@
 import DB.DBConnection;
-import models.Bruker;
-import models.Film;
-import models.Person;
-import models.Produksjonsselskap;
+import models.*;
+import models.crew.CrewMember;
+import models.crew.CrewTypes;
+import models.crew.Skuespiller;
 import models.reactions.Rating;
 
 import java.sql.Date;
@@ -21,12 +21,39 @@ public class Main {
         produksjonsselskap.save(connection.getConn());
         film.save(connection.getConn());
 
-        Bruker bruker = new Bruker("P.G", "plåp");
-        bruker.save(connection.getConn());
-        Rating brukerRating = new Rating(bruker, film, "My favourite ;)", "The pizza guy is awesome, wish there were more!", 10);
-        brukerRating.save(connection.getConn());
+        Serie serie = new Serie(produksjonsselskap, "Adventures of Pål the Pizza Guy", 40, 2020, new Date(0),
+                "More of Pål the Pizza Guy every week!", 2);
+        serie.save(connection.getConn());
 
-        System.out.println("brukerID: " + bruker.getID() + " -- ratingID: " + brukerRating.getID());
+        Episode episode = new Episode(serie, 1, 1);
+        episode.save(connection.getConn());
+
+        Bruker bruker = new Bruker("Pauli P", "plåp");
+        bruker.save(connection.getConn());
+
+        Rating brukerFilmRating = new Rating(bruker, film, "My favourite ;)", "The pizza guy is awesome, wish there were more!", 10);
+        brukerFilmRating.save(connection.getConn());
+
+        Rating brukerSerieRating = new Rating(bruker, serie, "Even better than the movie!", "Love it", 10);
+        brukerSerieRating.save(connection.getConn());
+
+        Rating brukerEpisodeRating = new Rating(bruker, episode, "Even episode so far!", "enjoyed every minute", 10);
+        brukerEpisodeRating.save(connection.getConn());
+
+        Person person = new Person("Brad Pitt", "USA", 1963);
+        person.save(connection.getConn());
+
+        CrewMember member = new CrewMember(person, episode, CrewTypes.REGISSOR);
+        member.save(connection.getConn());
+
+        Skuespiller actor = new Skuespiller(person, episode, "guy in background");
+        actor.save(connection.getConn());
+
+        System.out.println("brukerID: " + bruker.getID() +
+                " -- filmRatingID: " + brukerFilmRating.getID() +
+                " -- serieRatingID: " + brukerSerieRating.getID() +
+                " -- episodeRatingID: " + brukerEpisodeRating.getID()
+        );
     }
 
 }

@@ -10,8 +10,5 @@ import java.sql.Connection;
 public interface IFilm {
 
     void addCrewMember(Connection conn, CrewMember member);
-    void initializeCrewMember(Connection conn, CrewMember member);
-
     void addActor(Connection conn, Skuespiller actor);
-    void initializeActor(Connection conn, Skuespiller actor);
 }

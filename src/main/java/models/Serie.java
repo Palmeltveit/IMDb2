@@ -15,8 +15,9 @@ public class Serie extends BaseFilm implements IRateable, ActiveDomainObject {
 
     private long serieID = -1;
 
-    public Serie(int SerieId) {
+    public Serie(long serieId) {
         super(-1);
+        this.serieID = serieId;
     }
 
     public Serie(Produksjonsselskap produksjonsselskap, String tittel, int lengde, int utgivelsesar,
@@ -30,6 +31,10 @@ public class Serie extends BaseFilm implements IRateable, ActiveDomainObject {
 
     public void addComment(Connection conn, Kommentar comment) {
         DBHelper.addComment(conn, "SerieKommentar", "SerieID", this.serieID, comment);
+    }
+
+    public long getSerieID() {
+        return serieID;
     }
 
     public void initialize(Connection conn) {
@@ -62,6 +67,7 @@ public class Serie extends BaseFilm implements IRateable, ActiveDomainObject {
                 PreparedStatement statement = conn.prepareStatement(
                         "INSERT INTO Serie(FilmID) VALUES (?)",
                         PreparedStatement.RETURN_GENERATED_KEYS);
+                statement.setLong(1, super.getID());
 
                 this.serieID = DBHelper.executeAndCheckInsertWithReturnId(statement);
             }

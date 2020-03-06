@@ -1,5 +1,8 @@
 package DB;
 
+import models.Produksjonsselskap;
+import models.crew.CrewMember;
+import models.crew.Skuespiller;
 import models.reactions.Kommentar;
 import models.reactions.Rating;
 
@@ -63,6 +66,39 @@ public class DBHelper {
         } catch (Exception e) {
             System.out.println("db error during select of Serie Rating= "+e);
             return;
+        }
+    }
+
+    public static void addCrewMember(Connection conn, String tableName, String FKName, long id, CrewMember member){
+        try {
+            PreparedStatement statement = conn.prepareStatement(
+                    "INSERT INTO " + tableName + " (" + FKName + ", Person) VALUES (?, ?)",
+                    PreparedStatement.RETURN_GENERATED_KEYS);
+
+            statement.setLong(1, id);
+            statement.setLong(2, member.getPerson().getID());
+
+            DBHelper.executeAndCheckInsert(statement);
+
+        } catch (Exception e){
+            System.out.println("db error during save of CrewMember= " + e);
+        }
+    }
+
+    public static void addActor(Connection conn, String tableName, String FKName, long id, Skuespiller skuespiller){
+        try {
+            PreparedStatement statement = conn.prepareStatement(
+                    "INSERT INTO " + tableName + " (" + FKName + ", Person, Rolle) VALUES (?, ?, ?)",
+                    PreparedStatement.RETURN_GENERATED_KEYS);
+
+            statement.setLong(1, id);
+            statement.setLong(2, skuespiller.getPerson().getID());
+            statement.setString(3, skuespiller.getRolle());
+
+            DBHelper.executeAndCheckInsert(statement);
+
+        } catch (Exception e){
+            System.out.println("db error during save of Skuespiller= " + e);
         }
     }
 }

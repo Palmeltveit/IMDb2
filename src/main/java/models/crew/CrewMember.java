@@ -1,6 +1,7 @@
 package models.crew;
 
 import DB.ActiveDomainObject;
+import jdk.jshell.spi.ExecutionControl;
 import models.IFilm;
 import models.Person;
 
@@ -23,8 +24,15 @@ public class CrewMember implements ActiveDomainObject {
         put(MUSIKER, "Musiker");
     }};
 
+    public CrewMember(Person person, IFilm film, CrewTypes crewType) {
+        this.film = film;
+        this.crewType = crewType;
+        this.person = person;
+    }
+
     public void initialize(Connection conn) {
-        film.initializeCrewMember(conn, this);
+        //unødvendig å bruke exceptions her for vår del
+        System.out.println("unødvendig å hente ut et spesifikk crewmember i en spesifikk film -> ikke implementert");
     }
 
     public void refresh(Connection conn) {

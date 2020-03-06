@@ -12,8 +12,14 @@ public class Skuespiller implements ActiveDomainObject {
     private Person person;
     private String rolle;
 
+    public Skuespiller(Person person, IFilm film, String rolle) {
+        this.film = film;
+        this.person = person;
+        this.rolle = rolle;
+    }
+
     public void initialize(Connection conn) {
-        film.initializeActor(conn, this);
+        System.out.println("unødvendig å hente ut en spesifikk skuespiller i en spesifikk film -> ikke implementert");
     }
 
     public void refresh(Connection conn) {

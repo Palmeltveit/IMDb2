@@ -104,7 +104,6 @@ public class BaseFilm implements ActiveDomainObject {
 
         } catch (Exception e) {
             System.out.println("db error during select of film= "+e);
-            return;
         }
     }
 

@@ -39,19 +39,7 @@ public class Film extends BaseFilm implements IFilm, IRateable {
         if(this.getID() == -1){
             this.save(conn);
         }
-        try {
-            PreparedStatement statement = conn.prepareStatement(
-                    "INSERT INTO " + tableName + " (Film, Person) VALUES (?, ?)",
-                    PreparedStatement.RETURN_GENERATED_KEYS);
-
-            statement.setLong(1, this.getID());
-            statement.setLong(2, member.getPerson().getID());
-
-            DBHelper.executeAndCheckInsert(statement);
-
-        } catch (Exception e){
-            System.out.println("db error during save of Film CrewMember= " + e);
-        }
+        DBHelper.addCrewMember(conn, tableName, "Film", this.getID(), member);
     }
 
     public void addActor(Connection conn, Skuespiller skuespiller) {
@@ -59,29 +47,7 @@ public class Film extends BaseFilm implements IFilm, IRateable {
         if(this.getID() == -1){
             this.save(conn);
         }
-        try {
-            PreparedStatement statement = conn.prepareStatement(
-                    "INSERT INTO " + tableName + " (Film, Person, Rolle) VALUES (?, ?, ?)",
-                    PreparedStatement.RETURN_GENERATED_KEYS);
-
-            statement.setLong(1, this.getID());
-            statement.setLong(2, skuespiller.getPerson().getID());
-            statement.setString(2, skuespiller.getRolle());
-
-            DBHelper.executeAndCheckInsert(statement);
-
-        } catch (Exception e){
-            System.out.println("db error during save of Film Skuespiller= " + e);
-        }
+        DBHelper.addActor(conn, tableName, "Film", this.getID(), skuespiller);
     }
-
-    public void initializeCrewMember(Connection conn, CrewMember member) {
-
-    }
-
-    public void initializeActor(Connection conn, Skuespiller actor) {
-
-    }
-
 
 }
