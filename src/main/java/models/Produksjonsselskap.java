@@ -3,9 +3,12 @@ package models;
 import DB.ActiveDomainObject;
 import DB.DBConnection;
 import DB.DBHelper;
+import models.crew.Skuespiller;
 
 import javax.xml.transform.Result;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Produksjonsselskap implements ActiveDomainObject {
 
@@ -73,4 +76,31 @@ public class Produksjonsselskap implements ActiveDomainObject {
             System.out.println("db error during save of production company= " + e);
         }
     }
+
+    /*
+    static public List<Produksjonsselskap> findLargestProductionCompanyForGenre(
+            Connection conn, String genre) {
+        ArrayList<Produksjonsselskap> list = new ArrayList<>();
+
+        try (
+                PreparedStatement stm = conn.prepareStatement(
+                        "SELECT Film, Rolle FROM `FilmSkuespiller` WHERE `Person` = ?"
+                );
+
+        ) {
+            stm.setLong(1, this.ID);
+            try ( ResultSet filmRs = filmerStm.executeQuery(); ) {
+                while (filmRs.next()) {
+                    Film film = new Film(filmRs.getInt("Film"));
+                    film.initialize(conn);
+                    String rolle = filmRs.getString("Rolle");
+                    list.add(new Skuespiller(this, film, rolle));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("db error during select of Person= " + e);
+        }
+        return list;
+    }
+    */
 }

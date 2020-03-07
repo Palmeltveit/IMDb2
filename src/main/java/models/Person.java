@@ -3,10 +3,14 @@ package models;
 import DB.ActiveDomainObject;
 import DB.DBConnection;
 import DB.DBHelper;
+import models.crew.Skuespiller;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class Person implements ActiveDomainObject {
 
@@ -43,7 +47,7 @@ public class Person implements ActiveDomainObject {
     @Override
     public void initialize(Connection conn) {
         try {
-            PreparedStatement statement = conn.prepareStatement("Navn, Fødselsland, Fødselsår from Person where ID=?");
+            PreparedStatement statement = conn.prepareStatement("SELECT Navn, Fødselsland, Fødselsår from Person where ID=?");
             statement.setLong(1, this.ID);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -79,5 +83,72 @@ public class Person implements ActiveDomainObject {
         } catch (Exception e){
             System.out.println("db error during save of Person= " + e);
         }
+    }
+
+    public List<Skuespiller> findAllActorRoles(Connection conn) {
+        ArrayList<Skuespiller> list = new ArrayList<>();
+
+        try (
+            PreparedStatement filmerStm = conn.prepareStatement(
+                    "SELECT Film, Rolle FROM `FilmSkuespiller` WHERE `Person` = ?"
+            );
+            PreparedStatement episoderStm = conn.prepareStatement(
+                    "SELECT Episode, Rolle FROM `EpisodeSkuespiller` WHERE `Person` = ?"
+            );
+
+        ) {
+            filmerStm.setLong(1, this.ID);
+            try ( ResultSet filmRs = filmerStm.executeQuery(); ) {
+                while (filmRs.next()) {
+                    Film film = new Film(filmRs.getInt("Film"));
+                    film.initialize(conn);
+                    String rolle = filmRs.getString("Rolle");
+                    list.add(new Skuespiller(this, film, rolle));
+                }
+            }
+
+            episoderStm.setLong(1, this.ID);
+            try ( ResultSet episoderRs = episoderStm.executeQuery(); ) {
+                while (episoderRs.next()) {
+                    Episode episode = new Episode(episoderRs.getInt("Episode"));
+                    episode.initialize(conn);
+                    String rolle = episoderRs.getString("Rolle");
+                    list.add(new Skuespiller(this, episode, rolle));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("db error during select of Person= " + e);
+        }
+        return list;
+    }
+
+    static public List<Person> findAllByName(Connection conn, String nameLike) {
+        ArrayList<Person> list = new ArrayList<>();
+
+        try (
+                PreparedStatement personsStm = conn.prepareStatement(
+                        "SELECT ID, Fødselsland, Fødselsår, Navn FROM `Person` WHERE `Navn` LIKE ?"
+                );
+
+        ) {
+            personsStm.setString(1, nameLike);
+            try ( ResultSet personsRs = personsStm.executeQuery(); ) {
+                while (personsRs.next()) {
+                    Person person = new Person(
+                            personsRs.getString("Navn"),
+                            personsRs.getString("Fødselsland"),
+                            personsRs.getInt("Fødselsår"));
+                    person.ID = personsRs.getInt("ID");
+                    list.add(person);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("db error during select of Person= " + e);
+        }
+        return list;
+    }
+
+    static public Optional<Person> findByName(Connection conn, String nameLike) {
+        return findAllByName(conn, nameLike).stream().findFirst();
     }
 }

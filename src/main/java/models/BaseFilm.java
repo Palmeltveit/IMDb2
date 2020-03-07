@@ -24,7 +24,7 @@ public class BaseFilm implements ActiveDomainObject {
 
     private List<Kategori> categoryList;
 
-    public BaseFilm(int id){
+    public BaseFilm(long id){
         this.ID = id;
     }
 

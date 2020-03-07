@@ -1,5 +1,6 @@
 package DB;
 
+import models.Film;
 import models.Produksjonsselskap;
 import models.crew.CrewMember;
 import models.crew.Skuespiller;

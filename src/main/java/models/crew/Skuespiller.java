@@ -1,10 +1,13 @@
 package models.crew;
 
 import DB.ActiveDomainObject;
+import models.Episode;
+import models.Film;
 import models.IFilm;
 import models.Person;
 
 import java.sql.Connection;
+import java.util.Optional;
 
 public class Skuespiller implements ActiveDomainObject {
 
@@ -36,5 +39,15 @@ public class Skuespiller implements ActiveDomainObject {
 
     public String getRolle() {
         return rolle;
+    }
+
+    public Optional<Film> getFilm() {
+        if (film instanceof Film) return Optional.of((Film) film);
+        return Optional.empty();
+    }
+
+    public Optional<Episode> getEpisode() {
+        if (film instanceof Episode) return Optional.of((Episode) film);
+        return Optional.empty();
     }
 }
