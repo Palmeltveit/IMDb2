@@ -38,15 +38,16 @@ public class Serie extends BaseFilm implements IRateable, ActiveDomainObject {
     }
 
     public void initialize(Connection conn) {
-        try {
+        try (
             PreparedStatement stmt = conn.prepareStatement("select * from Serie where ID=?");
+        ){
             stmt.setLong(1, this.serieID);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                this.setID(rs.getLong("FilmID"));
-                super.initialize(conn);
+            try(ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    this.setID(rs.getLong("FilmID"));
+                    super.initialize(conn);
+                }
             }
-
         } catch (Exception e) {
             System.out.println("db error during select of Serie= "+e);
             return;
@@ -64,12 +65,15 @@ public class Serie extends BaseFilm implements IRateable, ActiveDomainObject {
             super.save(conn);
             if(super.getID() != -1) { //save successful
                 //assuming not in table -> inserting
-                PreparedStatement statement = conn.prepareStatement(
-                        "INSERT INTO Serie(FilmID) VALUES (?)",
-                        PreparedStatement.RETURN_GENERATED_KEYS);
-                statement.setLong(1, super.getID());
+                try(
+                    PreparedStatement statement = conn.prepareStatement(
+                            "INSERT INTO Serie(FilmID) VALUES (?)",
+                            PreparedStatement.RETURN_GENERATED_KEYS);
+                ) {
+                    statement.setLong(1, super.getID());
 
-                this.serieID = DBHelper.executeAndCheckInsertWithReturnId(statement);
+                    this.serieID = DBHelper.executeAndCheckInsertWithReturnId(statement);
+                }
             }
         } catch (Exception e){
             System.out.println("db error during save of Film= " + e);

@@ -58,20 +58,21 @@ public class Episode implements ActiveDomainObject, IFilm, IRateable {
 
     @Override
     public void initialize(Connection conn) {
-        try {
+        try (
             PreparedStatement statement = conn.prepareStatement("select * from Episode where ID=?");
+        ){
             statement.setLong(1, this.ID);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                //getting production company
-                Serie serie = new Serie(rs.getLong("SerieID"));
-                serie.initialize(conn);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    //getting production company
+                    Serie serie = new Serie(rs.getLong("SerieID"));
+                    serie.initialize(conn);
 
-                this.serie = serie;
-                this.sesongNr = rs.getInt("SesongNr");
-                this.episodeNr = rs.getInt("EpisodeNr");
+                    this.serie = serie;
+                    this.sesongNr = rs.getInt("SesongNr");
+                    this.episodeNr = rs.getInt("EpisodeNr");
+                }
             }
-
         } catch (Exception e) {
             System.out.println("db error during select of episode= "+e);
         }
@@ -89,12 +90,11 @@ public class Episode implements ActiveDomainObject, IFilm, IRateable {
 
             this.serie.save(conn);
             if (this.serie.getSerieID() != -1) {
-                try {
-                    //assuming not in table -> inserting
+                try (
                     PreparedStatement statement = conn.prepareStatement(
-                            "INSERT INTO Episode(SerieID, SesongNr, EpisodeNr) VALUES (?, ?, ?)",
-                            PreparedStatement.RETURN_GENERATED_KEYS);
-
+                        "INSERT INTO Episode(SerieID, SesongNr, EpisodeNr) VALUES (?, ?, ?)",
+                        PreparedStatement.RETURN_GENERATED_KEYS);
+                ){
                     statement.setLong(1, this.serie.getSerieID());
                     statement.setInt(2, this.sesongNr);
                     statement.setInt(3, this.episodeNr);

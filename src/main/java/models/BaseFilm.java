@@ -87,21 +87,24 @@ public class BaseFilm implements ActiveDomainObject {
     }
 
     public void initialize(Connection conn) {
-        try {
+        try (
             PreparedStatement stmt = conn.prepareStatement("select * from Film where ID=?");
+        ){
             stmt.setLong(1, this.getID());
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                //getting production company
-                Produksjonsselskap produksjonsselskap = new Produksjonsselskap(rs.getInt("Produksjonsselskap"));
-                produksjonsselskap.initialize(conn);
+            try (
+                ResultSet rs = stmt.executeQuery();
+            ) {
+                while (rs.next()) {
+                    //getting production company
+                    Produksjonsselskap produksjonsselskap = new Produksjonsselskap(rs.getInt("Produksjonsselskap"));
+                    produksjonsselskap.initialize(conn);
 
-                this.initAbstraktFilmValues(produksjonsselskap,
-                        rs.getString("Tittel"), rs.getInt("Lengde"),
-                        rs.getInt("Utgivelsesår"), rs.getDate("LanseringsDato"),
-                        rs.getString("Beskrivelse"), rs.getInt("OpprinneligLagetFor"));
+                    this.initAbstraktFilmValues(produksjonsselskap,
+                            rs.getString("Tittel"), rs.getInt("Lengde"),
+                            rs.getInt("Utgivelsesår"), rs.getDate("LanseringsDato"),
+                            rs.getString("Beskrivelse"), rs.getInt("OpprinneligLagetFor"));
+                }
             }
-
         } catch (Exception e) {
             System.out.println("db error during select of film= "+e);
         }
@@ -113,13 +116,11 @@ public class BaseFilm implements ActiveDomainObject {
 
     public void save(Connection conn) {
         if (this.ID == -1) { //assuming ID == -1 <=> should be saved
-            try {
-                //assuming not in table -> inserting
-                PreparedStatement statement = conn.prepareStatement(
+            try (PreparedStatement statement = conn.prepareStatement(
                         "INSERT INTO Film(Produksjonsselskap, Tittel, Lengde, Utgivelsesår, " +
                                 "LanseringsDato, Beskrivelse, OpprinneligLagetFor) VALUES (?, ?, ?, ?, ?, ?, ?)",
                         PreparedStatement.RETURN_GENERATED_KEYS);
-
+            ){
                 statement.setLong(1, this.getProduksjonsselskap().getID());
                 statement.setString(2, this.getTittel());
                 statement.setInt(3, this.getLengde());

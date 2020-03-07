@@ -61,6 +61,7 @@ public class Produksjonsselskap implements ActiveDomainObject {
             if(this.ID == -1) {
                 //assuming not in table -> inserting
                 PreparedStatement statement = conn.prepareStatement("INSERT INTO Produksjonsselskap(Navn, Opprettet) VALUES (?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
+                statement.closeOnCompletion();
                 statement.setString(1, this.navn);
                 statement.setDate(2, this.opprettet);
                 this.ID = DBHelper.executeAndCheckInsertWithReturnId(statement);

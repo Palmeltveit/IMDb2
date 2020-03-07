@@ -47,20 +47,20 @@ public class Main {
         Episode episode = new Episode(serie, 1, 1);
         episode.save(connection.getConn());
 
-        // Bruker bruker = new Bruker("Pauli P", "plåp");
-        // bruker.save(connection.getConn());
+        Bruker bruker = new Bruker("Pauli G", "plåp");
+        bruker.save(connection.getConn());
 
-        // Rating brukerFilmRating = new Rating(bruker, film, "My favourite ;)",
-        //         "The pizza guy is awesome, wish there were more!", 10);
-        // brukerFilmRating.save(connection.getConn());
+        Rating brukerFilmRating = new Rating(bruker, film, "My favourite ;)",
+                 "The pizza guy is awesome, wish there were more!", 10);
+         brukerFilmRating.save(connection.getConn());
 
-        // Rating brukerSerieRating = new Rating(bruker, serie, "Even better than the movie!",
-        //         "Love it", 10);
-        // brukerSerieRating.save(connection.getConn());
+         Rating brukerSerieRating = new Rating(bruker, serie, "Even better than the movie!",
+                 "Love it", 10);
+         brukerSerieRating.save(connection.getConn());
 
-        // Rating brukerEpisodeRating = new Rating(bruker, episode, "Even episode so far!",
-        //         "enjoyed every minute", 10);
-        // brukerEpisodeRating.save(connection.getConn());
+        Rating brukerEpisodeRating = new Rating(bruker, episode, "Even episode so far!",
+                "enjoyed every minute", 10);
+        brukerEpisodeRating.save(connection.getConn());
 
         Person brad = new Person("Brad Pitt", "USA", 1963);
         brad.save(connection.getConn());
@@ -77,15 +77,15 @@ public class Main {
         Skuespiller bradInDeadpool = new Skuespiller(brad, deadpool, "invisible guy");
         bradInDeadpool.save(connection.getConn());
 
-        // System.out.println("brukerID: " + bruker.getID() +
-        //         " -- filmRatingID: " + brukerFilmRating.getID() +
-        //         " -- serieRatingID: " + brukerSerieRating.getID() +
-        //         " -- episodeRatingID: " + brukerEpisodeRating.getID());
+        System.out.println("brukerID: " + bruker.getID() +
+                " -- filmRatingID: " + brukerFilmRating.getID() +
+                " -- serieRatingID: " + brukerSerieRating.getID() +
+                " -- episodeRatingID: " + brukerEpisodeRating.getID());
 
-        // System.out.println(bradInDeadpool.getRolle());
-        // System.out.println(bradInDeadpool.getPerson().getID());
+        System.out.println(bradInDeadpool.getRolle());
+        System.out.println(bradInDeadpool.getPerson().getID());
 
-        // brad.findAllActorRoles(connection.getConn()).stream().forEach(s -> System.out.println(s.getRolle()));
+        brad.findAllActorRoles(connection.getConn()).stream().forEach(s -> System.out.println(s.getRolle()));
 
         Kategori thriller = new Kategori("nyting", "enda en beskrivelse");
         thriller.save(connection.getConn());

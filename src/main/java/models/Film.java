@@ -12,7 +12,7 @@ import java.sql.*;
 import java.util.List;
 
 public class Film extends BaseFilm implements IFilm, IRateable {
-    private Kategori kategori;
+    private Kategori kategori; //TODO: (Jøgga) "En film kan ha flere kategorier"
 
     public Film(long id) {
         super(id);

@@ -35,8 +35,9 @@ public class Bruker implements ActiveDomainObject {
     }
 
     private boolean checkIfUsernameUnique(Connection conn){
-        try {
+        try (
             PreparedStatement statement = conn.prepareStatement("SELECT * FROM Bruker WHERE Brukernavn=?");
+        ){
             statement.setString(1, this.brukernavn);
             ResultSet rs = statement.executeQuery();
 
@@ -49,8 +50,9 @@ public class Bruker implements ActiveDomainObject {
 
     @Override
     public void initialize(Connection conn) {
-        try {
+        try (
             PreparedStatement statement = conn.prepareStatement("SELECT ID from Bruker where Brukernavn=? AND PassordHash=?");
+        ){
             statement.setString(1, this.brukernavn);
             statement.setString(2, this.passwordHash);
             ResultSet rs = statement.executeQuery();
@@ -71,11 +73,11 @@ public class Bruker implements ActiveDomainObject {
     public void save(Connection conn) throws RuntimeException {
         if(this.ID == -1){ // id == -1 <=> should be saved
             if(checkIfUsernameUnique(conn)) {
-                try {
+                try (
                     PreparedStatement statement = conn.prepareStatement(
                             "INSERT INTO Bruker(Brukernavn, PassordHash) VALUES (?, ?)",
-                            PreparedStatement.RETURN_GENERATED_KEYS
-                    );
+                            PreparedStatement.RETURN_GENERATED_KEYS);
+                ){
                     statement.setString(1, this.brukernavn);
                     statement.setString(2, this.passwordHash);
 

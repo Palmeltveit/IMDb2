@@ -46,8 +46,9 @@ public class Person implements ActiveDomainObject {
 
     @Override
     public void initialize(Connection conn) {
-        try {
+        try(
             PreparedStatement statement = conn.prepareStatement("SELECT Navn, Fødselsland, Fødselsår from Person where ID=?");
+        ) {
             statement.setLong(1, this.ID);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -68,11 +69,12 @@ public class Person implements ActiveDomainObject {
     @Override
     public void save(Connection conn) {
 
-        try {
+        try (
             //assuming not in table -> inserting
             PreparedStatement statement = conn.prepareStatement(
                     "INSERT INTO Person(Navn, Fødselsland, Fødselsår) VALUES (?, ?, ?)",
                     PreparedStatement.RETURN_GENERATED_KEYS);
+            ) {
 
             statement.setString(1, navn);
             statement.setString(2, fodselsland);
@@ -126,10 +128,9 @@ public class Person implements ActiveDomainObject {
         ArrayList<Person> list = new ArrayList<>();
 
         try (
-                PreparedStatement personsStm = conn.prepareStatement(
-                        "SELECT ID, Fødselsland, Fødselsår, Navn FROM `Person` WHERE `Navn` LIKE ?"
-                );
-
+            PreparedStatement personsStm = conn.prepareStatement(
+                    "SELECT ID, Fødselsland, Fødselsår, Navn FROM `Person` WHERE `Navn` LIKE ?"
+            );
         ) {
             personsStm.setString(1, nameLike);
             try ( ResultSet personsRs = personsStm.executeQuery(); ) {
