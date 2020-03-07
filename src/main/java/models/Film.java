@@ -9,45 +9,51 @@ import models.reactions.Kommentar;
 import models.reactions.Rating;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Film extends BaseFilm implements IFilm, IRateable {
-    private Kategori kategori; //TODO: (Jøgga) "En film kan ha flere kategorier"
+    private List<Kategori> kategorier; //TODO: (Jøgga) "En film kan ha flere kategorier"
 
     public Film(long id) {
         super(id);
     }
 
-    public Kategori getKategori() {
-        return kategori;
+    public List<Kategori> getKategorier() {
+        return kategorier;
     }
 
     @Override
     public void initialize(Connection conn) {
         super.initialize(conn);
 
+        kategorier = new ArrayList<>();
+
         // Eeeh, ikke helt fungerende kanskje?
         try (
             PreparedStatement stmt = conn.prepareStatement(
                    "SELECT Kategori.ID, Kategori.Navn, Kategori.Beskrivelse FROM `Film` " +
-                           "INNER JOIN `FilmKategori` ON `Film`.ID = ? " +
-                           "INNER JOIN `Kategori` ON `FilmKategori`.Kategori = `Kategori`.ID"
+                           "INNER JOIN `FilmKategori` ON `Film`.ID = `FilmKategori`.Film " +
+                           "INNER JOIN `Kategori` ON `FilmKategori`.Kategori = `Kategori`.ID " +
+                           "WHERE `Film`.ID = ?"
             );
         ) {
             stmt.setLong(1, this.getID());
             try ( ResultSet rs = stmt.executeQuery(); ) {
                 while (rs.next()) {
-                    //getting production company
-                    kategori = new Kategori(rs.getInt("ID"),
+                    Kategori k = new Kategori(rs.getInt("ID"),
                             rs.getString("Navn"), rs.getString("Beskrivelse"));
-                    break; // assume only 1
+                    // System.out.println("Got kategori: " + k.getID() + ", " + k.getNavn() + ", " + k.getBeskrivelse());
+                    kategorier.add(k);
                 }
             }
         } catch (Exception e) {
             System.out.println("db error during select of film kategori = "+e);
         }
-
     }
+
+    @Override
+    public void refresh(Connection conn) { initialize(conn); }
 
     public Film(Produksjonsselskap produksjonsselskap, String tittel, int lengde, int utgivelsesar,
                 Date langeringsDato, String beskrivelse, int opprinneligLagetFor) {

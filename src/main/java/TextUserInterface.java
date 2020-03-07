@@ -5,15 +5,22 @@
 // 5. Sette inn ny anmeldelse av en episode av en serie.
 
 import DB.DBConnection;
+import com.mysql.cj.protocol.ResultsetRow;
 import jdk.jfr.Category;
-import models.Film;
-import models.Kategori;
-import models.Person;
-import models.Produksjonsselskap;
+import models.*;
+import models.crew.CrewMember;
+import models.crew.CrewTypes;
 import models.crew.Skuespiller;
 
 import javax.swing.text.html.Option;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public class TextUserInterface {
@@ -25,9 +32,9 @@ public class TextUserInterface {
         scanner = new Scanner(System.in);
     }
 
-    private void p(String s) { System.out.print(s); }
-    private void pl(String s) { System.out.println(s); }
-    private void pl() { System.out.println(); }
+    static private void p(String s) { System.out.print(s); }
+    static private void pl(String s) { System.out.println(s); }
+    static private void pl() { System.out.println(); }
 
     Optional<Person> findPerson() {
         p("Enter name of person: ");
@@ -95,8 +102,231 @@ public class TextUserInterface {
         });
     }
 
-    void insertNewMovie() {
+    class FindBy<T> {
+        public List<T> findAllByLike(Connection conn, String query, String likeString, Function<ResultSet, T> fromRow) {
+            List<T> elems = new ArrayList<>();
+            try ( PreparedStatement stmt = conn.prepareStatement(query); ) {
+                stmt.setString(1, likeString);
+                System.out.println("SQL: " + stmt.toString());
+                try ( ResultSet rs = stmt.executeQuery(); ) {
+                    while (rs.next()) {
+                        T e = fromRow.apply(rs);
+                        assert e != null;
+                        System.out.println("got row: " + e);
+                        elems.add(e);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return elems;
+        }
 
+        public Optional<T> findByLike(Connection conn, String query, String likeString, Function<ResultSet, T> fromRow) {
+            return findAllByLike(conn, query, likeString, fromRow).stream().findFirst();
+        }
+    }
+
+
+    static private List<Integer> findIDsByLike(Connection conn, String query, String likeString, String IDField) {
+        List<Integer> ids = new ArrayList<>();
+        try ( PreparedStatement stmt = conn.prepareStatement(query); ) {
+            stmt.setString(1, likeString);
+            System.out.println("SQL: " + stmt.toString());
+            try ( ResultSet rs = stmt.executeQuery(); ) {
+                while (rs.next()) {
+                    System.out.println("got row");
+                    ids.add(rs.getInt(IDField));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
+    Person findOrCreatePerson(String name) {
+        FindBy<Person> findByPerson = new FindBy<>();
+        Optional<Person> personOptional = findByPerson.findByLike(conn.getConn(),
+                //"SELECT `Person`.ID, `Person`.Navn, `Person`.Fødselsland, `Person`.Fødselsår, Film FROM `FilmRegissør` " +
+                //                       "INNER JOIN `Person` ON `FilmRegissør`.Person = `Person`.ID " +
+                //                       "WHERE `Person`.Navn LIKE ?",
+                "SELECT `Person`.ID, `Person`.Navn, `Person`.Fødselsland, `Person`.Fødselsår FROM `Person`" +
+                                       "WHERE `Person`.Navn LIKE ?",
+                name,
+                rs -> {
+                    try {
+                        return new Person(rs.getString("Navn"),
+                                rs.getString("Fødselsland"),
+                                rs.getInt("Fødselsår"));
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
+        Person p = personOptional.orElseGet(() -> {
+            pl("No such person, creating...");
+            p("Enter birth country: ");
+            String birthCountry = scanner.nextLine();
+            p("Enter birth year: ");
+            int birthYear = scanner.nextInt();
+            scanner.nextLine();
+            Person person = new Person(name, birthCountry, birthYear);
+            person.save(conn.getConn());
+            return person;
+        });
+        pl(p.getID() + ": " + p.getNavn() + " " + p.getFodselsland() + " " + p.getFodselsar());
+        return p;
+    }
+
+    Kategori findOrCreateCategory(String name) {
+        FindBy<Kategori> findByCategory = new FindBy<>();
+        Optional<Kategori> kategoriOptional = findByCategory.findByLike(conn.getConn(),
+                "SELECT `Kategori`.ID, `Kategori`.Navn, `Kategori`.Beskrivelse FROM `Kategori`" +
+                        "WHERE `Kategori`.Navn LIKE ?",
+                name,
+                rs -> {
+                    try {
+                        return new Kategori(rs.getInt("ID"),
+                                rs.getString("Navn"),
+                                rs.getString("Beskrivelse"));
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
+        Kategori k = kategoriOptional.orElseGet(() -> {
+            pl("No such category, creating...");
+            p("Enter description: ");
+            String description = scanner.nextLine();
+            Kategori kategori = new Kategori(name, description);
+            kategori.save(conn.getConn());
+            return kategori;
+        });
+        pl(k.getID() + ": " + k.getNavn() + " " + k.getBeskrivelse());
+        return k;
+    }
+
+    Produksjonsselskap findOrCreateProductionCompany(String name) {
+        FindBy<Produksjonsselskap> findByProductionCompany = new FindBy<>();
+        Optional<Produksjonsselskap> produksjonsselskapOptional = findByProductionCompany.findByLike(conn.getConn(),
+                "SELECT ID, Navn, Opprettet FROM `Produksjonsselskap`" +
+                        "WHERE Navn LIKE ?",
+                name,
+                rs -> {
+                    try {
+                        return new Produksjonsselskap(rs.getInt("ID"),
+                                rs.getString("Navn"),
+                                Date.valueOf(rs.getString("Opprettet")));
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
+        Produksjonsselskap p = produksjonsselskapOptional.orElseGet(() -> {
+            pl("No such production company, creating...");
+            p("Enter date of creation: ");
+            String creationDate = scanner.nextLine();
+            Produksjonsselskap produksjonsselskap = new Produksjonsselskap(name, Date.valueOf(creationDate));
+            produksjonsselskap.save(conn.getConn());
+            return produksjonsselskap;
+        });
+        pl(p.getID() + ": " + p.getNavn() + " " + p.getOpprettet());
+        return p;
+    }
+
+
+    void insertNewMovie() {
+        p("Ener movie title: ");
+        String title = scanner.nextLine();
+
+        p("Ener movie description: ");
+        String description = scanner.nextLine();
+
+        p("Enter movie duration: ");
+        int duration = scanner.nextInt();
+        scanner.nextLine();
+
+        p("Enter movie release year: ");
+        int releaseYear = scanner.nextInt();
+        scanner.nextLine();
+
+        p("Enter movie release date: ");
+        String releaseDateString = scanner.nextLine();
+        Date releaseDate = Date.valueOf(releaseDateString);
+
+        p("Enter production company name: ");
+        String productionCompanyName = scanner.nextLine();
+        Produksjonsselskap produksjonsselskap = findOrCreateProductionCompany(productionCompanyName);
+
+
+        Map<String, FilmLagetFor> originallyMadeForMap = new HashMap<>();
+        originallyMadeForMap.put("CINEMA", FilmLagetFor.KINO);
+        originallyMadeForMap.put("TV", FilmLagetFor.TV);
+        originallyMadeForMap.put("FILM", FilmLagetFor.FILM);
+        String inpMadeFor = null;
+        do {
+            if (inpMadeFor == null) p("Not a valid choice (one of CINEMA, TV, FILM): ");
+            else p("Enter film made for originally (one of: CINEMA, TV, FILM): ");
+            inpMadeFor = scanner.nextLine();
+        } while (!originallyMadeForMap.containsKey(inpMadeFor.toUpperCase()));
+
+        FilmLagetFor madeFor = originallyMadeForMap.get(inpMadeFor);
+
+        pl("Creating movie entry...");
+        Film film = new Film(produksjonsselskap, title, duration,
+                releaseYear, releaseDate, description, madeFor.ord());
+        film.save(conn.getConn());
+
+
+        List<Person> directors = new ArrayList<>();
+        while (true) {
+            pl(directors.size() == 0 ? "Enter director name" : "Enter another director name or NEXT");
+            String input = scanner.nextLine().strip();
+            System.out.println("READ: '" + input + "'");
+            if (input.equals("NEXT")) break;
+            directors.add(findOrCreatePerson(input));
+        }
+        directors.forEach(director ->
+                film.addCrewMember(conn.getConn(), new CrewMember(director, film, CrewTypes.REGISSOR)));
+
+        List<Kategori> categories = new ArrayList<>();
+        while (true) {
+            pl(categories.size() == 0 ? "Enter category name" : "Enter another category name or NEXT");
+            String input = scanner.nextLine().strip();
+            System.out.println("READ: '" + input + "'");
+            if (input.equals("NEXT")) break;
+            categories.add(findOrCreateCategory(input));
+        }
+        categories.forEach(category ->
+                film.addCategory(conn.getConn(), category));
+
+        List<Person> scriptWriters = new ArrayList<>();
+        while (true) {
+            pl(scriptWriters.size() == 0 ? "Enter scriptwriter name" : "Enter another scriptwriter name or NEXT");
+            String input = scanner.nextLine().strip();
+            System.out.println("READ: '" + input + "'");
+            if (input.equals("NEXT")) break;
+            scriptWriters.add(findOrCreatePerson(input));
+        }
+        scriptWriters.forEach(scriptWriter ->
+                film.addCrewMember(conn.getConn(), new CrewMember(scriptWriter, film, CrewTypes.MANUSFORFATTER)));
+
+        List<Person> actors = new ArrayList<>();
+        while (true) {
+            pl(actors.size() == 0 ? "Enter actor name" : "Enter another actor name or NEXT");
+            String input = scanner.nextLine().strip();
+            System.out.println("READ: '" + input + "'");
+            if (input.equals("NEXT")) break;
+            actors.add(findOrCreatePerson(input));
+        }
+        actors.forEach(actor -> {
+                Skuespiller s = new Skuespiller(actor, film, "Han spilte der");
+                s.save(conn.getConn());
+            }
+        );
+
+        film.refresh(conn.getConn());
     }
 
     void insertNewReview() {

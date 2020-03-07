@@ -25,6 +25,12 @@ public class Produksjonsselskap implements ActiveDomainObject {
         this.opprettet = opprettet;
     }
 
+    public Produksjonsselskap(long id, String navn, Date opprettet){
+        this.ID = id;
+        this.navn = navn;
+        this.opprettet = opprettet;
+    }
+
     public long getID() {
         return ID;
     }
