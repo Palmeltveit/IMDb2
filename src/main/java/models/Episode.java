@@ -28,6 +28,23 @@ public class Episode implements ActiveDomainObject, IFilm, IRateable {
         this.episodeNr = episodeNr;
     }
 
+    public long getID() {
+        return ID;
+    }
+
+    public Serie getSerie() {
+        return serie;
+    }
+
+    public int getSesongNr() {
+        return sesongNr;
+    }
+
+    public int getEpisodeNr() {
+        return episodeNr;
+    }
+
+
     public void addRating(Connection conn, Rating rating) {
         DBHelper.addRating(conn, "EpisodeRating", "EpisodeID", this.ID, rating);
     }

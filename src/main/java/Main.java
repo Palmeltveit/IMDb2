@@ -49,6 +49,9 @@ public class Main {
         Episode episode = new Episode(serie, 1, 1);
         episode.save(connection.getConn());
 
+        // Bruker bruker = new Bruker("root", "toor");
+        // bruker.save(connection.getConn());
+
         // Bruker bruker = new Bruker("Pauli Gg", "plåp");
         // bruker.save(connection.getConn());
 
@@ -118,8 +121,8 @@ public class Main {
         allCategories.forEach(c -> System.out.println(c.getNavn()));
 
         TextUserInterface tui = new TextUserInterface(connection);
-        // tui.showMenu();
-        tui.insertNewMovie();
+        tui.showMenu();
+        // tui.insertNewMovie();
 
         try {
             connection.getConn().close();

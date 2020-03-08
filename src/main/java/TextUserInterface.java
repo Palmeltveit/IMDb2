@@ -11,6 +11,7 @@ import models.*;
 import models.crew.CrewMember;
 import models.crew.CrewTypes;
 import models.crew.Skuespiller;
+import models.reactions.Rating;
 
 import javax.swing.text.html.Option;
 import java.sql.Connection;
@@ -45,6 +46,7 @@ public class TextUserInterface {
     }
 
     void findAllRolesForActor() {
+        pl("> Find all roles for actor");
         Optional<Person> personOptional = findPerson();
         if (personOptional.isEmpty()) {
             pl("Unable to find a matching person...");
@@ -57,6 +59,7 @@ public class TextUserInterface {
     }
 
     void findAllActorMovieAppearences() {
+        pl("> Find all actor movie appearences");
         Optional<Person> personOptional = findPerson();
         if (personOptional.isEmpty()) {
             pl("Unable to find a matching person...");
@@ -73,6 +76,7 @@ public class TextUserInterface {
     }
 
     void findProductionCompanyWithMostMoviesPerGenre() {
+        pl("> Find production company with most movies produced per genre");
         Map<Kategori, Produksjonsselskap> m = new HashMap<>();
 
         List<Kategori> categories = Kategori.findAllCategories(conn.getConn());
@@ -103,6 +107,30 @@ public class TextUserInterface {
     }
 
     class FindBy<T> {
+        public List<T> findAllByIds(Connection conn, String query, long[] ids, Function<ResultSet, T> fromRow) {
+            List<T> elems = new ArrayList<>();
+            try ( PreparedStatement stmt = conn.prepareStatement(query); ) {
+                for (int i = 0; i < ids.length; i++)
+                    stmt.setLong(i+1, ids[i]);
+                System.out.println("SQL: " + stmt.toString());
+                try ( ResultSet rs = stmt.executeQuery(); ) {
+                    while (rs.next()) {
+                        T e = fromRow.apply(rs);
+                        assert e != null;
+                        System.out.println("got row: " + e);
+                        elems.add(e);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return elems;
+        }
+
+        public Optional<T> findByIds(Connection conn, String query, long[] ids, Function<ResultSet, T> fromRow) {
+            return findAllByIds(conn, query, ids, fromRow).stream().findFirst();
+        }
+
         public List<T> findAllByLike(Connection conn, String query, String likeString, Function<ResultSet, T> fromRow) {
             List<T> elems = new ArrayList<>();
             try ( PreparedStatement stmt = conn.prepareStatement(query); ) {
@@ -237,6 +265,7 @@ public class TextUserInterface {
 
 
     void insertNewMovie() {
+        pl("> Insert new movie");
         p("Ener movie title: ");
         String title = scanner.nextLine();
 
@@ -329,8 +358,109 @@ public class TextUserInterface {
         film.refresh(conn.getConn());
     }
 
-    void insertNewReview() {
+    Optional<Serie> findSerie(String seriesTitle) {
+        FindBy<Serie> findBySerie = new FindBy<>();
+        Optional<Serie> serieOptional = findBySerie.findByLike(conn.getConn(),
+                "SELECT `Serie`.ID FROM `Serie` " +
+                        "INNER JOIN `Film` on `Serie`.FilmID = `Film`.ID " +
+                        "WHERE Tittel LIKE ?",
+                seriesTitle,
+                rs -> {
+                    try {
+                        Serie e = new Serie(rs.getInt("ID"));
+                        e.initialize(conn.getConn());
+                        return e;
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
+        return serieOptional;
+    }
 
+    Optional<Episode> findEpisode(long serieID, int seasonNumber, int episodeNumber) {
+        FindBy<Episode> findByEpisode = new FindBy<>();
+        Optional<Episode> episodeOptional = findByEpisode.findByIds(conn.getConn(),
+                "SELECT `Episode`.ID FROM `Episode` " +
+                        "INNER JOIN `Serie` on `Serie`.ID = `Episode`.SerieID " +
+                        "INNER JOIN `Film` ON `Serie`.FilmID = `Film`.ID " +
+                        // "WHERE `Serie`.ID = ?",
+                        "WHERE `Serie`.ID = ? AND `Episode`.SesongNr = ? AND `Episode`.EpisodeNr = ?",
+                // new long[] {serieID},
+                new long[] {serieID, seasonNumber, episodeNumber},
+                rs -> {
+                    try {
+                        Episode e = new Episode(rs.getInt("ID"));
+                        e.initialize(conn.getConn());
+                        return e;
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
+        return episodeOptional;
+    }
+
+    void insertNewReview() {
+        pl("> Insert new review");
+
+        pl("Authenticate to proceed");
+        p("Enter username: ");
+        String username = scanner.nextLine();
+        p("Enter password: ");
+        String password = scanner.nextLine();
+        Bruker user = new Bruker(username, password);
+        user.initialize(conn.getConn());
+
+        if (!user.isLoggedIn()) {
+            pl("Invalid credentials");
+            return;
+        }
+        pl("Logged in as: " + user.getBrukernavn());
+
+
+        p("Find series by name: ");
+        String seriesNameLike = scanner.nextLine();
+
+        Optional<Serie> serieOptional = findSerie(seriesNameLike);
+        if (serieOptional.isEmpty()) {
+            pl("No such series... returning to main menu");
+            return;
+        }
+        Serie s = serieOptional.get();
+        pl("Found series: " + s.getID() + ": " + s.getTittel() + " " + s.getBeskrivelse());
+
+        p("Enter season number: ");
+        int seasonNumber = scanner.nextInt();
+        scanner.nextLine();
+        p("Enter episode number: ");
+        int episodeNumber = scanner.nextInt();
+        scanner.nextLine();
+
+        Optional<Episode> episodeOptional = findEpisode(s.getID(), seasonNumber, episodeNumber);
+        if (episodeOptional.isEmpty()) {
+            pl("No such episode... returning to main menu");
+            return;
+        }
+        Episode e = episodeOptional.get();
+        pl("Found episode: " + e.getEpisodeNr() + " " + e.getSesongNr() + " " + e.getID());
+
+        p("Enter rating title: ");
+        String title = scanner.nextLine();
+
+        p("Enter rating content: ");
+        String content = scanner.nextLine();
+
+        p("Enter rating number: ");
+        int ratingNumber = scanner.nextInt();
+        scanner.nextLine();
+
+        Rating episodeRating = new Rating(user, e, title, content, ratingNumber);
+        episodeRating.save(conn.getConn());
+
+        episodeRating.refresh(conn.getConn());
+
+        pl("Added new episode rating with ID " + episodeRating.getID() + " " + episodeRating.getTittel());
     }
 
     public void showMenu() {
@@ -355,7 +485,7 @@ public class TextUserInterface {
                 case 2: findAllActorMovieAppearences(); break;
                 case 3: findProductionCompanyWithMostMoviesPerGenre(); break;
                 case 4: insertNewMovie(); break;
-                case 5: insertNewMovie(); break;
+                case 5: insertNewReview(); break;
                 case 6: quit = true; break;
                 default: pl("Not a valid option, try again."); break;
             }
