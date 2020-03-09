@@ -108,4 +108,8 @@ public class Film extends BaseFilm implements IFilm, IRateable {
         }
     }
 
+    public String toString() {
+        return this.getTittel();
+    }
+
 }

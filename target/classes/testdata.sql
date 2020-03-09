@@ -11,6 +11,8 @@ INSERT INTO Person (ID, Navn, Fødselsår, Fødselsland) VALUES (8, 'Roger Aller
 INSERT INTO Person (ID, Navn, Fødselsår, Fødselsland) VALUES (9, 'Steven Lisberger', 1951, 'USA') ;
 INSERT INTO Person (ID, Navn, Fødselsår, Fødselsland) VALUES (10, 'Jeff Bridges', 1949, 'USA') ;
 
+INSERT INTO Person (ID, Navn, Fødselsår, Fødselsland) VALUES (15, 'Samuel L. Jackson', 1945, 'USA');
+
 INSERT INTO Bruker (ID, Brukernavn, PassordHash) VALUES (1, 'usr', 'D') ; -- pass=A
 
 INSERT INTO Kategori (ID, Navn, Beskrivelse) VALUES (1, 'Thriller', 'For en thrillende opplevelse') ;

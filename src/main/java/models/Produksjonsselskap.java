@@ -16,7 +16,7 @@ public class Produksjonsselskap implements ActiveDomainObject {
     private String navn;
     private Date opprettet;
 
-    public Produksjonsselskap(int id){
+    public Produksjonsselskap(long id){
         this.ID = id;
     }
 

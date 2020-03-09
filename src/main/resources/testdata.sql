@@ -34,7 +34,7 @@ INSERT INTO Film (ID, Produksjonsselskap, Tittel, Lengde, Utgivelsesår, Lanseri
 INSERT INTO FilmKategori (Film, Kategori) VALUES (1, 2) ;
 INSERT INTO FilmKategori (Film, Kategori) VALUES (1, 6) ;
 
-INSERT INTO FilmSkuespiller(Film, Person, Rolle) V, RolleALUES (1, 5, 'Vincent Vega') ;
+INSERT INTO FilmSkuespiller(Film, Person, Rolle) VALUES (1, 5, 'Vincent Vega') ;
 INSERT INTO FilmRegissør(Film, Person) VALUES (1, 4) ;
 
 INSERT INTO Film (ID, Produksjonsselskap, Tittel, Lengde, Utgivelsesår, LanseringsDato,

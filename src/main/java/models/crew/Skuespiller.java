@@ -41,12 +41,12 @@ public class Skuespiller implements ActiveDomainObject {
         return rolle;
     }
 
-    public Optional<Film> getFilm() {
+    public Optional<IFilm> getFilm() {
         if (film instanceof Film) return Optional.of((Film) film);
         return Optional.empty();
     }
 
-    public Optional<Episode> getEpisode() {
+    public Optional<IFilm> getEpisode() {
         if (film instanceof Episode) return Optional.of((Episode) film);
         return Optional.empty();
     }

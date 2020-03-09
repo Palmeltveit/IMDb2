@@ -28,6 +28,13 @@ public class Person implements ActiveDomainObject {
         this.fodselsar = fodselsar;
     }
 
+    public Person(long ID, String navn, String fodselsland, int fodselsar) {
+        this.ID = ID;
+        this.navn = navn;
+        this.fodselsland = fodselsland;
+        this.fodselsar = fodselsar;
+    }
+
     public long getID() {
         return ID;
     }

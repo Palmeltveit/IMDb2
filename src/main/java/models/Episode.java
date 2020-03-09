@@ -124,4 +124,9 @@ public class Episode implements ActiveDomainObject, IFilm, IRateable {
             }
         }
     }
+
+    public String toString() {
+        return String.format("%s S%02d:E%02d", this.getSerie().getTittel(),
+                this.getSesongNr(), this.getEpisodeNr());
+    }
 }
