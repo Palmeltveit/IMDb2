@@ -97,7 +97,8 @@ public class TextUserInterface {
                     highestFilmCountProducer = key;
                 }
             }
-            m.put(category, highestFilmCountProducer);
+            if (highestFilmCountProducer != null)
+                m.put(category, highestFilmCountProducer);
         });
 
         pl("==== Genre --> Production company with most films of the genre =====");
