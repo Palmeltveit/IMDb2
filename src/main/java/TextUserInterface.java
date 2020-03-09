@@ -211,6 +211,7 @@ public class TextUserInterface {
             scanner.nextLine();
             Person person = new Person(name, birthCountry, birthYear);
             person.save(conn.getConn());
+            pl("Created new person with ID: " + person.getID());
             return person;
         });
         pl(p.getID() + ": " + p.getNavn() + " " + p.getFodselsland() + " " + p.getFodselsar());
@@ -443,7 +444,7 @@ public class TextUserInterface {
             return;
         }
         Serie s = serieOptional.get();
-        pl("Found series: " + s.getID() + ": " + s.getTittel() + " " + s.getBeskrivelse());
+        pl("Found series: " + s.getSerieID() + ": " + s.getTittel() + " " + s.getBeskrivelse());
 
         p("Enter season number: ");
         int seasonNumber = scanner.nextInt();
@@ -452,7 +453,7 @@ public class TextUserInterface {
         int episodeNumber = scanner.nextInt();
         scanner.nextLine();
 
-        Optional<Episode> episodeOptional = findEpisode(s.getID(), seasonNumber, episodeNumber);
+        Optional<Episode> episodeOptional = findEpisode(s.getSerieID(), seasonNumber, episodeNumber);
         if (episodeOptional.isEmpty()) {
             pl("No such episode... returning to main menu");
             return;

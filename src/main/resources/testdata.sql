@@ -13,7 +13,7 @@ INSERT INTO Person (ID, Navn, Fødselsår, Fødselsland) VALUES (10, 'Jeff Bridg
 
 INSERT INTO Person (ID, Navn, Fødselsår, Fødselsland) VALUES (15, 'Samuel L. Jackson', 1945, 'USA');
 
-INSERT INTO Bruker (ID, Brukernavn, PassordHash) VALUES (1, 'usr', 'D') ; -- pass=A
+INSERT INTO Bruker (ID, Brukernavn, PassordHash) VALUES (1, 'admin', 'ehqmr') ; -- pass=admin
 
 INSERT INTO Kategori (ID, Navn, Beskrivelse) VALUES (1, 'Thriller', 'For en thrillende opplevelse') ;
 INSERT INTO Kategori (ID, Navn, Beskrivelse) VALUES (2, 'Comedy', 'En beskrivelse av livet ditt') ;
@@ -94,3 +94,14 @@ INSERT INTO Film (ID, Produksjonsselskap, Tittel, Lengde, Utgivelsesår, Lanseri
                   VALUES (8, 3, 'Schindlers List', 116, 1993, '1993-01-01', 'Bra film', 3) ; -- 1=TV, 2=FILM, 3 = KINO
 
 INSERT INTO FilmKategori (Film, Kategori) VALUES (8, 2) ;
+
+INSERT INTO Film (ID, Produksjonsselskap, Tittel, Lengde, Utgivelsesår, LanseringsDato,
+                  Beskrivelse, OpprinneligLagetFor)
+                  VALUES (9, 3, 'Homeland', 116, 2011, '2011-01-01', 'Bra TV serie', 1) ; -- 1=TV, 2=FILM, 3 = KINO
+
+INSERT INTO FilmKategori (Film, Kategori) VALUES (9, 2) ;
+INSERT INTO Serie (ID, FilmID) VALUES (1, 9) ;
+INSERT INTO Episode (ID, SerieID, EpisodeNr, SesongNr) VALUES (1, 1, 1, 1) ;
+INSERT INTO Episode (ID, SerieID, EpisodeNr, SesongNr) VALUES (2, 1, 2, 1) ;
+INSERT INTO Episode (ID, SerieID, EpisodeNr, SesongNr) VALUES (3, 1, 3, 1) ;
+INSERT INTO Episode (ID, SerieID, EpisodeNr, SesongNr) VALUES (4, 1, 4, 1) ;

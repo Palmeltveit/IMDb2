@@ -83,6 +83,8 @@ public class DBHelper {
             statement.setLong(1, id);
             statement.setLong(2, member.getPerson().getID());
 
+            System.out.println("addCrewMember SQL: " + statement.toString());
+
             DBHelper.executeAndCheckInsert(statement);
 
         } catch (Exception e){
