@@ -23,7 +23,7 @@ public class Produksjonsselskap implements ActiveDomainObject {
      * Initializes based on id when already in db
      * @param id Id of db entry
      */
-    public Produksjonsselskap(int id){
+    public Produksjonsselskap(long id){
         this.ID = id;
     }
 

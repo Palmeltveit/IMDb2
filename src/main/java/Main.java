@@ -1,30 +1,23 @@
 import DB.DBConnection;
-import models.*;
-import models.crew.CrewMember;
-import models.crew.CrewTypes;
-import models.crew.Skuespiller;
-import models.reactions.Rating;
-import models.FilmLagetFor;
+import models.Bruker;
+import models.Film;
+import models.Produksjonsselskap;
 
-import javax.swing.text.html.Option;
 import java.sql.*;
-import java.util.List;
-import java.util.Optional;
 
 public class Main {
+    private static String databaseURL = null;
+    private static String databaseUsername = null;
+    private static String databasePassword = null;
 
-    public static void resetDB(Connection conn) {
-        try (
-                PreparedStatement deletePersons = conn.prepareStatement("DELETE FROM Person");
-                PreparedStatement deleteFilmActors = conn.prepareStatement("DELETE FROM FilmSkuespiller");
-                PreparedStatement deleteEpisodeActors = conn.prepareStatement("DELETE FROM EpisodeSkuespiller");
-        ) {
-            assert deleteEpisodeActors.execute();
-            assert deleteFilmActors.execute();
-            assert deletePersons.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
+    private static void parseArgs(String[] args) {
+        if (args.length < 3) {
+            System.err.printf("Usage: java -jar IMDb2.jar <databaseurl> <username> <password>\n");
+            System.exit(1);
         }
+        databaseURL = args[0];
+        databaseUsername = args[1];
+        databasePassword = args[2];
     }
 
     public static void main(String[] args){
@@ -67,58 +60,13 @@ public class Main {
         //         "enjoyed every minute", 10);
         // brukerEpisodeRating.save(connection.getConn());
 
-        Person brad = new Person("Brad Pitt", "USA", 1963);
-        brad.save(connection.getConn());
-        System.out.println("Brad Pitt: " + brad.getNavn());
+        parseArgs(args);
 
-        CrewMember member = new CrewMember(brad, episode, CrewTypes.REGISSOR);
-        member.save(connection.getConn());
+        DBConnection connection = new DBConnection(databaseURL, databaseUsername, databasePassword);
+        connection.connect();
 
-        Skuespiller actor = new Skuespiller(brad, episode, "guy in background");
-        actor.save(connection.getConn());
-
-        Film deadpool = new Film(produksjonsselskap, "Deadpool", 190, 2018,
-                Date.valueOf("2019-01-02"), "En grei nok film", FilmLagetFor.KINO.ord());
-        Skuespiller bradInDeadpool = new Skuespiller(brad, deadpool, "invisible guy");
-        bradInDeadpool.save(connection.getConn());
-
-        // System.out.println("brukerID: " + bruker.getID() +
-        //         " -- filmRatingID: " + brukerFilmRating.getID() +
-        //         " -- serieRatingID: " + brukerSerieRating.getID() +
-        //         " -- episodeRatingID: " + brukerEpisodeRating.getID());
-
-        System.out.println(bradInDeadpool.getRolle());
-        System.out.println(bradInDeadpool.getPerson().getID());
-
-        brad.findAllActorRoles(connection.getConn()).stream().forEach(s -> System.out.println(s.getRolle()));
-
-        Kategori thriller = new Kategori("nyting", "enda en beskrivelse");
-        thriller.save(connection.getConn());
-
-        Kategori anotherOne = new Kategori("beats", "the dust");
-        anotherOne.save(connection.getConn());
-
-        deadpool.addCategory(connection.getConn(), thriller);
-        deadpool.addCategory(connection.getConn(), anotherOne);
-        deadpool.refresh(connection.getConn());
-
-
-        Kategori kategori = new Kategori(1);
-        kategori.initialize(connection.getConn());
-        System.out.print(kategori.getNavn());
-        System.out.print(kategori.getBeskrivelse());
-
-        Film f = new Film(deadpool.getID());
-        f.initialize(connection.getConn());
-        List<Kategori> kategorier = f.getKategorier();
-        kategorier.stream().forEach(k -> System.out.println("KATEGORI: " + k.getID() + ": " + k.getNavn() + " " + k.getBeskrivelse()));
-
-        Kategori k = kategorier.get(0);
-        List<Film> nytingFilms = k.findAllFilmsByCategory(connection.getConn());
-        nytingFilms.forEach(newfilm -> System.out.println(newfilm.getTittel() + " " + newfilm.getProduksjonsselskap().getNavn()));
-
-        List<Kategori> allCategories = Kategori.findAllCategories(connection.getConn());
-        allCategories.forEach(c -> System.out.println(c.getNavn()));
+        // Bruker b = new Bruker("admin", "admin");
+        // b.save(connection.getConn());
 
         TextUserInterface tui = new TextUserInterface(connection);
         tui.showMenu();

@@ -55,7 +55,10 @@ public class TextUserInterface {
 
         pl("==== Roles ====");
         Person p = personOptional.get();
-        p.findAllActorRoles(conn.getConn()).stream().forEach(s -> System.out.println(s.getRolle()));
+        p.findAllActorRoles(conn.getConn()).stream().forEach(s -> {
+            IFilm f = s.getFilm().orElseGet(() -> s.getEpisode().get());
+            System.out.println(s.getRolle() + " in " + (f == null ? "NONE" : f.toString()));
+        });
     }
 
     void findAllActorMovieAppearences() {
@@ -72,37 +75,44 @@ public class TextUserInterface {
                 .map(Skuespiller::getFilm)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .forEach(film -> pl(film.getTittel()));
+                .forEach(film -> pl(film.toString()));
     }
 
+    // Shitty code
     void findProductionCompanyWithMostMoviesPerGenre() {
         pl("> Find production company with most movies produced per genre");
-        Map<Kategori, Produksjonsselskap> m = new HashMap<>();
+        Map<Kategori, Long> m = new HashMap<>();
+        Map<Kategori, Integer> mCount = new HashMap<>();
 
         List<Kategori> categories = Kategori.findAllCategories(conn.getConn());
         categories.forEach(category -> {
             List<Film> filmsByCategory = category.findAllFilmsByCategory(conn.getConn());
-            Map<Produksjonsselskap, Integer> countMap = new HashMap<>();
+            Map<Long, Integer> countMap = new HashMap<>();
             filmsByCategory.forEach(film -> {
                 Produksjonsselskap p = film.getProduksjonsselskap();
-                final int newCount = countMap.getOrDefault(p, 1);
-                countMap.put(p, newCount);
+                final int newCount = countMap.getOrDefault(p.getID(), 0) + 1;
+                countMap.put(p.getID(), newCount);
             });
 
-            Produksjonsselskap highestFilmCountProducer = null;
-            for (Map.Entry<Produksjonsselskap, Integer> e : countMap.entrySet()) {
-                Produksjonsselskap key = e.getKey();
-                if (countMap.getOrDefault(highestFilmCountProducer, 0)
+            Long highestFilmCountProducerID = null;
+            for (Map.Entry<Long, Integer> e : countMap.entrySet()) {
+                Long key = e.getKey();
+                if (countMap.getOrDefault(highestFilmCountProducerID, 0)
                         < countMap.get(key)) {
-                    highestFilmCountProducer = key;
+                    highestFilmCountProducerID = key;
                 }
             }
-            m.put(category, highestFilmCountProducer);
+            if (highestFilmCountProducerID != null) {
+                m.put(category, highestFilmCountProducerID);
+                mCount.put(category, countMap.get(highestFilmCountProducerID));
+            }
         });
 
         pl("==== Genre --> Production company with most films of the genre =====");
         m.entrySet().stream().forEach(e -> {
-            pl(e.getKey().getNavn() + " -- " + e.getValue().getNavn());
+            Produksjonsselskap p = new Produksjonsselskap(e.getValue());
+            p.initialize(conn.getConn());
+            pl(e.getKey().getNavn() + " -- " + p.getNavn() + " (" + mCount.get(e.getKey()) + ")");
         });
     }
 
@@ -184,7 +194,7 @@ public class TextUserInterface {
                 name,
                 rs -> {
                     try {
-                        return new Person(rs.getString("Navn"),
+                        return new Person(rs.getLong("ID"), rs.getString("Navn"),
                                 rs.getString("Fødselsland"),
                                 rs.getInt("Fødselsår"));
                     } catch (SQLException e) {
@@ -201,6 +211,7 @@ public class TextUserInterface {
             scanner.nextLine();
             Person person = new Person(name, birthCountry, birthYear);
             person.save(conn.getConn());
+            pl("Created new person with ID: " + person.getID());
             return person;
         });
         pl(p.getID() + ": " + p.getNavn() + " " + p.getFodselsland() + " " + p.getFodselsar());
@@ -314,10 +325,15 @@ public class TextUserInterface {
             String input = scanner.nextLine().strip();
             System.out.println("READ: '" + input + "'");
             if (input.equals("NEXT")) break;
-            directors.add(findOrCreatePerson(input));
+            // directors.add(findOrCreatePerson(input));
+            Person p = findOrCreatePerson(input);
+            System.out.println("Person: " + p.getNavn() + ", " + p.getID());
+            CrewMember member = new CrewMember(p, film, CrewTypes.REGISSOR);
+            System.out.println(member.getPerson().getNavn() + ", " + member.getPerson().getID());
+
         }
-        directors.forEach(director ->
-                film.addCrewMember(conn.getConn(), new CrewMember(director, film, CrewTypes.REGISSOR)));
+        // directors.forEach(director ->
+        //         (new CrewMember(director, film, CrewTypes.REGISSOR)).save(conn.getConn()));
 
         List<Kategori> categories = new ArrayList<>();
         while (true) {
@@ -428,7 +444,7 @@ public class TextUserInterface {
             return;
         }
         Serie s = serieOptional.get();
-        pl("Found series: " + s.getID() + ": " + s.getTittel() + " " + s.getBeskrivelse());
+        pl("Found series: " + s.getSerieID() + ": " + s.getTittel() + " " + s.getBeskrivelse());
 
         p("Enter season number: ");
         int seasonNumber = scanner.nextInt();
@@ -437,7 +453,7 @@ public class TextUserInterface {
         int episodeNumber = scanner.nextInt();
         scanner.nextLine();
 
-        Optional<Episode> episodeOptional = findEpisode(s.getID(), seasonNumber, episodeNumber);
+        Optional<Episode> episodeOptional = findEpisode(s.getSerieID(), seasonNumber, episodeNumber);
         if (episodeOptional.isEmpty()) {
             pl("No such episode... returning to main menu");
             return;
