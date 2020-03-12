@@ -1,0 +1,130 @@
+#+TITLE: Documentation
+* How-To use this program
+Setup the database
+
+Either run:
+#+BEGIN_SRC sh
+# Create the database tables
+mysql <options> < src/main/resources/create_db.sql
+
+# Enter testdata such that all use-cases can be tested
+mysql <options> < src/main/resources/testdata.sql
+#+END_SRC
+
+** How to run
+The JAR file is built to be run using Java 11. Don't complain if you don't have
+Java 11.
+#+BEGIN_SRC sh
+java -jar IMDb2.jar <database_url> <database_username> <database_password>
+#+END_SRC
+
+* i) Overview and description of the classes
+#+CAPTION: Overview of the class hierarchy
+[[./class_overview.png]]
+
+** models.BaseFilm
+BaseFilm contains the shared functionality between Film and Serie
+
+** models.BaseFilm
+BaseFilm contains the shared functionality between Film and Serie
+
+*** models.Film, extends models.BaseFilm, implements IFilm and IRateable
+Corresponds to a Film in the database - contains the film methods not shared with Series
+
+*** models.Serie, extends models.BaseFilm, ActiveDomainObject
+A class corresponding to a Serie in the database, contains all methods special to Series, not shared with Film through BaseFilm.
+
+** models.Bruker, implements ActiveDomainObject
+Represents the user in the database, and is used to login and create a user
+
+** models.crew.CrewMember, implements ActiveDomainObject
+Class CrewMember corresponds to all types of crewmembers either in movies or eposodes
+
+** models.crew.CrewMember, implements ActiveDomainObject
+Class CrewMember corresponds to all types of crewmembers either in movies or eposodes
+
+** models.Episode, implements ActiveDomainObject, IFilm and IRatable
+Represents an episode of a series
+
+** models.Kategori, implements ActiveDomainObject
+A class corresponding to Kategori in the database
+
+** models.Kommentar, implements ActiveDomainObject
+Class Kommentar corresponds to a comment on a rateable class (movie, series, episode)
+
+** Main
+Is used to initialize the connection to the database and create an instance of TextUserInterface
+
+** models.Person, implements ActiveDomainObject
+A class corresponding to Person table in the database, contains methods special to person.
+
+** models.Produksjonsselskap, implements ActiveDomainObject
+A class corresponding to Produksjonsselskap in db.
+
+** ProfessionalHashingAlgorithm
+An instance of this class is used to "hash" the password for users, that are
+then stored in the database.
+Not a good hashing algorithm, but could easiliy be replaced.
+
+** models.reactions.rating, implements ActiveDomainObject
+A Rating is a rating on a rateable class (movie, series or episode)
+
+** models.crew.Skuespiller, implements ActiveDomainObject
+Class Skuespiller corresponds to actors in both movies and episodes
+
+** TextUserInterface
+The class used to implement the user interface for the application. This is
+where all the functionality that the user actually uses is implemented.
+
+* ii) Overview of how the usecases are realized in the program
+The user-interactivity for all usecases are implemented in TextUserInterface.
+Specific database calls that are not deemed to be useful outside this
+TextUserInterface class are also implemented here, such as findPersonByLike etc.
+
+** Usecase 1: Find the names of all roles for a given actor
+This usecase is implemented in a method called ~findAllRolesForActor~ in
+TextUserInterface. This method uses uses another method ~findPerson~ which reads
+in the name of the actor and searches the database for an actor with that name
+and returns it as an Optional<Person>.
+
+If there exists such a person it will call the ~findAllActorRoles~ method on
+that Person instance object. It iterates through all the roles and prints them
+out to stdout.
+
+** Usecase 2: Find all movies a given actor appears in
+This is implemented similarly to usecase 1, but in
+~findAllActorMovieAppearences~. It gets a person with the given name using
+~findPerson~ and calls the ~findAllActorRoles~ method. Instead of printing out
+the role it prints out the movie or series name.
+
+** Usecase 3: Find which production companies make the most movies for all genres
+This usecase is implemented in ~findProductionCompanyWithMostMoviesPerGenre~ ,
+which calls ~Kategori.findAllCategories()~, iterates through them all and
+finding all movies for that given category using the Kategori method
+~findAllFilmsByCategory~. It counts the number of films each production company
+has produced for the category and stores the production company with the highest
+amount in a map.
+
+At the end it iterates through the map and prints out the genre and production
+company that had the most movies for this genre.
+
+** Usecase 4: Insert new movie
+Implemented in ~insertNewMovie~. Lets the user enter movie details by reading
+from stdin. For values that are supposed to be in the database, such as
+directors and production companies, the user first searches for them by name. If
+they exist in the database then that entry is used, otherwise they are asked to
+create a new one, and then the newly created one is used.
+
+The user can enter directors, categories, scriptWriters, and actors, along side
+the details needed for a movie.
+
+** Usecase 5: Insert a new review of an episode of a series
+Implemented in ~insertNewReview~. First the user is asked to authenticate. This
+is done by using the ~Bruker~ class. If the credentials were correct it will
+continue, otherwise it will go back to the main menu.
+
+The user is prompted to enter a series name to lookup in the database. If none
+exists, it will return to the main menu. Likewise for finding an episode for the
+given series.
+
+The ~Rating~ class is used to create a new rating, and saving it to the database.
