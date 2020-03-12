@@ -6,30 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8efbf59b-d238-4a9b-b9e9-6d1730a41790" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/IMDb2_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DB/DBConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DB/DBConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DB/DBHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DB/DBHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TextUserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TextUserInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/testdata.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/testdata.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/DB/DBConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DB/DBConnection.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/DB/DBHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DB/DBHelper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/TextUserInterface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/TextUserInterface.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/BaseFilm.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/BaseFilm.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/Episode.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Episode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/Film.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Film.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/Person.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Person.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/Produksjonsselskap.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Produksjonsselskap.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/crew/Skuespiller.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/crew/Skuespiller.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/testdata.sql" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/testdata.sql" afterDir="false" />
-    </list>
+    <list default="true" id="8efbf59b-d238-4a9b-b9e9-6d1730a41790" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -158,10 +135,11 @@
     </state>
     <state x="446" y="26" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680@0.0.1280.680" timestamp="1583523916659" />
     <state x="886" y="7" width="380" height="574" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1440@0.0.2560.1440" timestamp="1583608979086" />
-    <state x="464" y="214" width="533" height="425" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1583796261219">
-      <screen x="0" y="0" width="1920" height="1080" />
+    <state x="3176" y="261" width="533" height="425" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1584042343601">
+      <screen x="2560" y="0" width="2560" height="1440" />
     </state>
     <state x="464" y="214" width="533" height="425" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1583796261219" />
+    <state x="3176" y="261" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.2560.1440/2560.0.2560.1440@2560.0.2560.1440" timestamp="1584042343601" />
     <state x="306" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1583403702157">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -234,11 +212,12 @@
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state width="112" height="60" key="LargeValuePreview.Tittel/0.0.2560.1440@0.0.2560.1440" timestamp="1583669841967" />
-    <state x="214" y="-17" width="1030" height="842" key="SettingsEditor" timestamp="1583797077920">
-      <screen x="0" y="0" width="1920" height="1080" />
+    <state x="2923" y="272" width="1030" height="842" key="SettingsEditor" timestamp="1584042352173">
+      <screen x="2560" y="0" width="2560" height="1440" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1583325919734" />
     <state x="214" y="-17" width="1030" height="842" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1583797077920" />
+    <state x="2923" y="272" key="SettingsEditor/0.0.2560.1440/2560.0.2560.1440@2560.0.2560.1440" timestamp="1584042352173" />
     <state x="517" y="324" width="432" height="253" key="classpath-attribute-editor" timestamp="1583796094136">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
