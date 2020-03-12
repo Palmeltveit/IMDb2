@@ -2,17 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8efbf59b-d238-4a9b-b9e9-6d1730a41790" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DB/DBConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DB/DBConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DB/DBHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DB/DBHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/BaseFilm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/BaseFilm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Bruker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Bruker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Episode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Episode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Film.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Film.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Person.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Produksjonsselskap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Produksjonsselskap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Serie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Serie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/TextUserInterface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/TextUserInterface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/models/Episode.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Episode.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/models/Film.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Film.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/models/Produksjonsselskap.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Produksjonsselskap.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,6 +105,9 @@
       <workItem from="1583322433880" duration="18204000" />
       <workItem from="1583520537844" duration="3968000" />
       <workItem from="1583532317490" duration="3611000" />
+      <workItem from="1583759723657" duration="143000" />
+      <workItem from="1583942719270" duration="3387000" />
+      <workItem from="1584010922921" duration="1835000" />
     </task>
     <servers />
   </component>
@@ -143,22 +143,30 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="371" y="89" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1280.680@0.0.1280.680" timestamp="1583161126939" />
-    <state width="1237" height="163" key="GridCell.Tab.0.bottom" timestamp="1583577134023">
+    <state x="389" y="65" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1583946684343">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1583577134023" />
-    <state width="1237" height="163" key="GridCell.Tab.0.center" timestamp="1583577134022">
+    <state x="389" y="65" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1280.680@0.0.1280.680" timestamp="1583946684343" />
+    <state x="421" y="96" key="FileChooserDialogImpl" timestamp="1583946683092">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1583577134022" />
-    <state width="1237" height="163" key="GridCell.Tab.0.left" timestamp="1583577134022">
+    <state x="421" y="96" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1583946683092" />
+    <state width="1237" height="283" key="GridCell.Tab.0.bottom" timestamp="1583946753861">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1583577134022" />
-    <state width="1237" height="163" key="GridCell.Tab.0.right" timestamp="1583577134023">
+    <state width="1237" height="283" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1583946753861" />
+    <state width="1237" height="283" key="GridCell.Tab.0.center" timestamp="1583946753861">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1583577134023" />
+    <state width="1237" height="283" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1583946753861" />
+    <state width="1237" height="283" key="GridCell.Tab.0.left" timestamp="1583946753860">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="283" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1583946753860" />
+    <state width="1237" height="283" key="GridCell.Tab.0.right" timestamp="1583946753861">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="283" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1583946753861" />
     <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1583524509037">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -179,21 +187,21 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1583325919734" />
-    <state x="337" y="166" key="com.intellij.ide.util.TipDialog" timestamp="1583532327413">
+    <state x="337" y="166" key="com.intellij.ide.util.TipDialog" timestamp="1584010920445">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="337" y="166" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1583532327413" />
+    <state x="337" y="166" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1584010920445" />
     <state x="0" y="0" width="612" height="680" key="find.popup" timestamp="1583577105406">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="0" y="0" width="612" height="680" key="find.popup/0.0.1280.680@0.0.1280.680" timestamp="1583577105406" />
-    <state x="297" y="151" key="run.anything.popup" timestamp="1583575895423">
+    <state x="297" y="151" key="run.anything.popup" timestamp="1583946034087">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="297" y="151" key="run.anything.popup/0.0.1280.680@0.0.1280.680" timestamp="1583575895423" />
-    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup" timestamp="1583522870349">
+    <state x="297" y="151" key="run.anything.popup/0.0.1280.680@0.0.1280.680" timestamp="1583946034087" />
+    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup" timestamp="1583943338919">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1583522870349" />
+    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1583943338919" />
   </component>
 </project>
