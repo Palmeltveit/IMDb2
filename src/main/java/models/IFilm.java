@@ -7,6 +7,9 @@ import models.reactions.Rating;
 
 import java.sql.Connection;
 
+/**
+ * An interface to simplify adding CrewMembers and actors to the various types of Film (Film, series, episode)
+ */
 public interface IFilm {
 
     void addCrewMember(Connection conn, CrewMember member);

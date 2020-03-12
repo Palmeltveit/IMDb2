@@ -9,14 +9,26 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class corresponding to Kategori in the database
+ */
 public class Kategori implements ActiveDomainObject {
 
     private long ID = -1;
 
     private String navn, beskrivelse;
 
+    /**
+     * Initialization when given category is already in database
+     * @param id Id in database
+     */
     public Kategori(long id) { this.ID = id; }
 
+    /**
+     * Initialization from input rather than db
+     * @param navn Name of category
+     * @param beskrivelse Description of category
+     */
     public Kategori(String navn, String beskrivelse) {
         this.navn = navn;
         this.beskrivelse = beskrivelse;

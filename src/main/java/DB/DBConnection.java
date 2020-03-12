@@ -3,6 +3,7 @@ package DB;
 import java.sql.*;
 import java.util.Properties;
 
+
 public class DBConnection {
     protected Connection conn;
 
@@ -24,8 +25,8 @@ public class DBConnection {
 
             // Properties for user and password.
             Properties p = new Properties();
-            p.put("user", "root");
-            p.put("password", "example");
+            p.put("user", "BigP");
+            p.put("password", "PgiB");
             conn = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/imdb2?serverTimezone=UTC&autoReconnect=true&useSSL=false",
                     p);

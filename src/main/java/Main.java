@@ -41,7 +41,7 @@ public class Main {
         produksjonsselskap.save(connection.getConn());
         film.save(connection.getConn());
 
-        Serie serie = new Serie(produksjonsselskap, "Adventures of Pål the Pizza Guy",
+        Serie serie = new Serie(produksjonsselskap, "Plapp",
                 40, 2020, new Date(0),
                 "More of Pål the Pizza Guy every week!", 2);
         serie.save(connection.getConn());

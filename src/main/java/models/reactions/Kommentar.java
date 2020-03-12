@@ -7,6 +7,9 @@ import models.IRateable;
 
 import java.sql.Connection;
 
+/**
+ * Class Kommentar corresponds to a comment on a rateable class (movie, series, episode)
+ */
 public class Kommentar implements ActiveDomainObject {
 
     private long ID = -1;
@@ -15,10 +18,21 @@ public class Kommentar implements ActiveDomainObject {
 
     private String tittel, innhold;
 
+    /**
+     *
+     * @param ID - id of comment in db
+     */
     public Kommentar(long ID) {
         this.ID = ID;
     }
 
+    /**
+     *
+     * @param bruker - user commenting
+     * @param film - movie being commented on
+     * @param tittel - title of comment
+     * @param innhold - body of comment
+     */
     public Kommentar(Bruker bruker, IRateable film, String tittel, String innhold) {
         this.bruker = bruker;
         this.rateable = film;

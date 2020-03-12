@@ -11,24 +11,53 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * A class corresponding to a Serie in the database,
+ * contains all methods special to Series, not shared with Film through BaseFilm.
+ */
 public class Serie extends BaseFilm implements IRateable, ActiveDomainObject {
 
     private long serieID = -1;
 
+    /**
+     * Initializes series based on id of instance already in the database
+     * @param serieId Id of Serie in database (not the Film ID)
+     */
     public Serie(long serieId) {
         super(-1);
         this.serieID = serieId;
     }
 
+    /**
+     * Initializes series based on input in the app, assuming not already existing in the db.
+     * Only forwards values to super (BaseFilm) for normal initialization.
+     * @param produksjonsselskap
+     * @param tittel
+     * @param lengde
+     * @param utgivelsesar
+     * @param langeringsDato
+     * @param beskrivelse
+     * @param opprinneligLagetFor
+     */
     public Serie(Produksjonsselskap produksjonsselskap, String tittel, int lengde, int utgivelsesar,
                  Date langeringsDato, String beskrivelse, int opprinneligLagetFor) {
         super(produksjonsselskap, tittel, lengde, utgivelsesar, langeringsDato, beskrivelse, opprinneligLagetFor);
     }
 
+    /**
+     * Adds Series-specific rating
+     * @param conn
+     * @param rating
+     */
     public void addRating(Connection conn, Rating rating) {
         DBHelper.addRating(conn, "SerieRating", "SerieID", this.serieID, rating);
     }
 
+    /**
+     * Adds Series-specific comment
+     * @param conn
+     * @param comment
+     */
     public void addComment(Connection conn, Kommentar comment) {
         DBHelper.addComment(conn, "SerieKommentar", "SerieID", this.serieID, comment);
     }

@@ -10,16 +10,28 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class corresponding to Produksjonsselskap in db.
+ */
 public class Produksjonsselskap implements ActiveDomainObject {
 
     private long ID = -1;
     private String navn;
     private Date opprettet;
 
+    /**
+     * Initializes based on id when already in db
+     * @param id Id of db entry
+     */
     public Produksjonsselskap(int id){
         this.ID = id;
     }
 
+    /**
+     * Initializes based on input values, assuming not in db
+     * @param navn Name of production company
+     * @param opprettet Date the company was created
+     */
     public Produksjonsselskap(String navn, Date opprettet){
         this.navn = navn;
         this.opprettet = opprettet;
@@ -61,6 +73,10 @@ public class Produksjonsselskap implements ActiveDomainObject {
         this.initialize(conn);
     }
 
+    /**
+     * Saves the production company to db if not already saved, otherwise updates Name and Opprettet fields.
+     * @param conn
+     */
     public void save(Connection conn) {
 
         try {

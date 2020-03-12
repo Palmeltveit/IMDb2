@@ -10,6 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
+/**
+ * BaseFilm contains the shared functionality between Film and Serie
+ */
 public class BaseFilm implements ActiveDomainObject {
 
     private long ID = -1; //-1 means no id yet => not saved in database
@@ -28,6 +31,16 @@ public class BaseFilm implements ActiveDomainObject {
         this.ID = id;
     }
 
+    /**
+     *
+     * @param produksjonsselskap - Production company producing the movie/series
+     * @param tittel - Title of movie
+     * @param lengde - length
+     * @param utgivelsesar - release year
+     * @param langeringsDato - release date
+     * @param beskrivelse - short description of movie
+     * @param opprinneligLagetFor - medium it was originally created for (cinema/streamig/...)
+     */
     public BaseFilm(Produksjonsselskap produksjonsselskap, String tittel, int lengde,
                     int utgivelsesar, Date langeringsDato, String beskrivelse, int opprinneligLagetFor) {
         this.produksjonsselskap = produksjonsselskap;
@@ -39,7 +52,17 @@ public class BaseFilm implements ActiveDomainObject {
         this.opprinneligLagetFor = opprinneligLagetFor;
     }
 
-    public void initAbstraktFilmValues(Produksjonsselskap produksjonsselskap, String tittel, int lengde,
+    /**
+     * Like constructor initializes, only after getting values from db based on id.
+     * @param produksjonsselskap
+     * @param tittel
+     * @param lengde
+     * @param utgivelsesar
+     * @param langeringsDato
+     * @param beskrivelse
+     * @param opprinneligLagetFor
+     */
+    protected void initAbstraktFilmValues(Produksjonsselskap produksjonsselskap, String tittel, int lengde,
                 int utgivelsesar, Date langeringsDato, String beskrivelse, int opprinneligLagetFor) {
         this.produksjonsselskap = produksjonsselskap;
         this.tittel = tittel;
@@ -50,10 +73,18 @@ public class BaseFilm implements ActiveDomainObject {
         this.opprinneligLagetFor = opprinneligLagetFor;
     }
 
+    /**
+     *
+     * @return Long id
+     */
     public long getID() {
         return ID;
     }
 
+    /**
+     *
+     * @return Produksjonsselskap Production company
+     */
     public Produksjonsselskap getProduksjonsselskap() {
         return produksjonsselskap;
     }
@@ -86,6 +117,10 @@ public class BaseFilm implements ActiveDomainObject {
         this.ID = ID;
     }
 
+    /**
+     * Initializes and retrieves from db based on id, creates and initialized instance of production company as well.
+     * @param conn - db-connection
+     */
     public void initialize(Connection conn) {
         try (
             PreparedStatement stmt = conn.prepareStatement("select * from Film where ID=?");
@@ -114,6 +149,10 @@ public class BaseFilm implements ActiveDomainObject {
         this.initialize(conn);
     }
 
+    /**
+     * Saves the film.
+     * @param conn - db-connection
+     */
     public void save(Connection conn) {
         if (this.ID == -1) { //assuming ID == -1 <=> should be saved
             try (PreparedStatement statement = conn.prepareStatement(

@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * A class corresponding to Person table in the database,
+ * contains methods special to person.
+ */
 public class Person implements ActiveDomainObject {
 
     private long ID;

@@ -12,6 +12,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Corresponds to a Film in the database - contains the film methods not shared with Series
+ */
 public class Film extends BaseFilm implements IFilm, IRateable {
     private List<Kategori> kategorier; //TODO: (Jøgga) "En film kan ha flere kategorier"
 
@@ -60,15 +63,29 @@ public class Film extends BaseFilm implements IFilm, IRateable {
         super(produksjonsselskap, tittel, lengde, utgivelsesar, langeringsDato, beskrivelse, opprinneligLagetFor);
     }
 
-    //TODO
+    /**
+     * Adds Film-specific rating to db
+     * @param conn
+     * @param rating
+     */
     public void addRating(Connection conn, Rating rating) {
         DBHelper.addRating(conn, "FilmRating", "FilmID", this.getID(), rating);
     }
 
+    /**
+     * Adds Film-specific comment to db
+     * @param conn
+     * @param comment
+     */
     public void addComment(Connection conn, Kommentar comment) {
         DBHelper.addComment(conn, "FilmKommentar", "FilmID", this.getID(), comment);
     }
 
+    /**
+     * Adds a CrewMember to the Film in DB
+     * @param conn
+     * @param member
+     */
     public void addCrewMember(Connection conn, CrewMember member) {
         String tableName = "Film" + member.getCrewTablePostfix();
 
@@ -78,6 +95,11 @@ public class Film extends BaseFilm implements IFilm, IRateable {
         DBHelper.addCrewMember(conn, tableName, "Film", this.getID(), member);
     }
 
+    /**
+     * Adds an actor to the film in DB
+     * @param conn
+     * @param skuespiller
+     */
     public void addActor(Connection conn, Skuespiller skuespiller) {
         String tableName = "FilmSkuespiller";
         if(this.getID() == -1){
@@ -86,6 +108,11 @@ public class Film extends BaseFilm implements IFilm, IRateable {
         DBHelper.addActor(conn, tableName, "Film", this.getID(), skuespiller);
     }
 
+    /**
+     * Adds a Category to the film in DB
+     * @param conn
+     * @param kategori
+     */
     public void addCategory(Connection conn, Kategori kategori) {
         if(this.getID() == -1){
             this.save(conn);

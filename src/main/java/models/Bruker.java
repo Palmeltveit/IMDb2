@@ -13,6 +13,11 @@ public class Bruker implements ActiveDomainObject {
     private long ID = -1;
     private String brukernavn, passwordHash;
 
+    /**
+     * initialized user, hashes password professionally and saves it in variable passwordHash
+     * @param brukernavn - username
+     * @param password - password in plain text
+     */
     public Bruker(String brukernavn, String password) {
         this.brukernavn = brukernavn;
         this.passwordHash = ProfessionalHashingAlgorithm.encrypt(password, 4);
@@ -34,6 +39,11 @@ public class Bruker implements ActiveDomainObject {
         return passwordHash;
     }
 
+    /**
+     *
+     * @param conn - db connection
+     * @return True if username is unique - not in db
+     */
     private boolean checkIfUsernameUnique(Connection conn){
         try (
             PreparedStatement statement = conn.prepareStatement("SELECT * FROM Bruker WHERE Brukernavn=?");
@@ -48,6 +58,10 @@ public class Bruker implements ActiveDomainObject {
         return false;
     }
 
+    /**
+     * retrieves user from db based on username and passwordHash
+     * @param conn - db connection
+     */
     @Override
     public void initialize(Connection conn) {
         try (
@@ -69,6 +83,11 @@ public class Bruker implements ActiveDomainObject {
         this.initialize(conn);
     }
 
+    /**
+     * Saves user based on given username and hashed password.
+     * @param conn - db-connection
+     * @throws RuntimeException if user with given username already exists
+     */
     @Override
     public void save(Connection conn) throws RuntimeException {
         if(this.ID == -1){ // id == -1 <=> should be saved
